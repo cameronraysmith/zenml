@@ -10,12 +10,16 @@ ENV PYTHONFAULTHANDLER=1 \
 
 ARG ZENML_VERSION
 
+RUN apt-get update && \
+    apt-get install -y git && \
+    rm -rf /var/lib/apt/lists/*
+
 # install the given zenml version (default to latest)
-RUN pip install zenml${ZENML_VERSION:+==$ZENML_VERSION}
+RUN pip install zenml${ZENML_VERSION}
 
 FROM base AS server
 
-RUN pip install zenml${ZENML_VERSION:+==$ZENML_VERSION}[server,secrets-aws,secrets-gcp,secrets-azure,secrets-hashicorp,s3fs,gcsfs,adlfs,connectors-aws,connectors-gcp,connectors-azure]
+RUN pip install zenml[server,secrets-aws,secrets-gcp,secrets-azure,secrets-hashicorp,s3fs,gcsfs,adlfs,connectors-aws,connectors-gcp,connectors-azure]${ZENML_VERSION}
 
 WORKDIR /zenml
 
